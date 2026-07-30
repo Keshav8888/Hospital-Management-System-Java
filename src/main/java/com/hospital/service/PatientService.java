@@ -69,5 +69,55 @@ public class PatientService {
 
         return convertToResponse(patient);
     }
+    
+    @Transactional
+    public void updatePatient(Long id, PatientUpdateRequest request) {
+
+        // Find patient
+
+        Patient patient = patientRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Patient not found."));
+
+        // Check duplicate phone number
+
+        if (!patient.getPhone().equals(request.getPhone())
+                && patientRepository.existsByPhone(request.getPhone())) {
+
+            throw new RuntimeException("Phone number already exists.");
+        }
+
+        // Update patient details
+
+        patient.setFirstName(request.getFirstName());
+
+        patient.setLastName(request.getLastName());
+
+        patient.setGender(request.getGender());
+
+        patient.setDateOfBirth(request.getDateOfBirth());
+
+        patient.setPhone(request.getPhone());
+
+        patient.setBloodGroup(request.getBloodGroup());
+
+        patient.setAddress(request.getAddress());
+
+        patient.setAllergies(request.getAllergies());
+
+        patient.setMedicalHistory(request.getMedicalHistory());
+
+        patientRepository.save(patient);
+    }
+    
+    @Transactional
+    public void deletePatient(Long id) {
+
+        Patient patient = patientRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Patient not found."));
+
+        patient.setStatus(Status.INACTIVE);
+
+        patientRepository.save(patient);
+    }
 
 }

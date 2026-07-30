@@ -3,19 +3,19 @@ package com.hospital.service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.hospital.dto.AdminRegisterRequest;
 import com.hospital.dto.AuthResponse;
+import com.hospital.dto.LoginRequest;
 import com.hospital.dto.PatientRegisterRequest;
+import com.hospital.entity.Admin;
 import com.hospital.entity.Patient;
 import com.hospital.entity.User;
 import com.hospital.enums.Role;
 import com.hospital.enums.Status;
+import com.hospital.repository.AdminRepository;
 import com.hospital.repository.PatientRepository;
 import com.hospital.repository.UserRepository;
 import com.hospital.util.JwtUtil;
-import com.hospital.dto.LoginRequest;
-import com.hospital.entity.Admin;
-import com.hospital.dto.AdminRegisterRequest;
-import com.hospital.repository.AdminRepository;
 
 import jakarta.transaction.Transactional;
 
