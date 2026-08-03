@@ -21,14 +21,20 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 	
 	List<Appointment> findByAppointmentDate(LocalDate appointmentDate);
 	
+	List<Appointment> findByAppointmentDateOrderByAppointmentTimeAsc(LocalDate appointmentDate);
+	
 	List<Appointment> findByDoctorAndAppointmentDate(Doctor doctor, LocalDate appointmentDate);
 	
 	List<Appointment> findByPatientAndStatus(Patient patient, AppointmentStatus status);
 	
 	List<Appointment> findByDoctorAndStatus(Doctor doctor, AppointmentStatus status);
 	
-	boolean existsByDoctorAndAppointmentDateAndAppointmentTime(
-	        Doctor doctor,
-	        LocalDate appointmentDate,
-	        LocalTime appointmentTime);
+	List<Appointment> findAllByOrderByAppointmentDateAscAppointmentTimeAsc();
+	
+	boolean existsByDoctorAndAppointmentDateAndAppointmentTime(Doctor doctor, LocalDate appointmentDate, LocalTime appointmentTime);
+
+	List<Appointment> findByAppointmentNumberContainingIgnoreCaseOrPatientFirstNameContainingIgnoreCaseOrPatientLastNameContainingIgnoreCaseOrDoctorFirstNameContainingIgnoreCaseOrDoctorLastNameContainingIgnoreCase(String appointmentNumber, String patientFirstName, String patientLastName, String doctorFirstName, String doctorLastName);
+	
+	boolean existsByDoctorAndAppointmentDateAndAppointmentTimeAndIdNot(Doctor doctor, LocalDate appointmentDate, LocalTime appointmentTime, Long id);
+	
 }

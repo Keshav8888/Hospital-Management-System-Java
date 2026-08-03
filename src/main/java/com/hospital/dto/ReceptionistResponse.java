@@ -2,6 +2,9 @@ package com.hospital.dto;
 
 import java.time.LocalDate;
 
+import com.hospital.enums.Gender;
+import com.hospital.enums.Status;
+
 public class ReceptionistResponse {
 
     private Long id;
@@ -12,7 +15,7 @@ public class ReceptionistResponse {
 
     private String email;
 
-    private String gender;
+    private Gender gender;
 
     private LocalDate dateOfBirth;
 
@@ -20,80 +23,82 @@ public class ReceptionistResponse {
 
     private String address;
 
-    private String status;
+    private Status status;
 
     public ReceptionistResponse() {
     }
 
-    public Long getId() {
-        return id;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public String getFirstName() {
-        return firstName;
-    }
+	public String getFirstName() {
+		return firstName;
+	}
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
 
-    public String getLastName() {
-        return lastName;
-    }
+	public String getLastName() {
+		return lastName;
+	}
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
 
-    public String getEmail() {
-        return email;
-    }
+	public String getEmail() {
+		return email;
+	}
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
-    public String getGender() {
-        return gender;
-    }
+	public Gender getGender() {
+		return gender;
+	}
 
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
+	public void setGender(Gender gender) {
+		this.gender = gender;
+	}
 
-    public LocalDate getDateOfBirth() {
-        return dateOfBirth;
-    }
+	public LocalDate getDateOfBirth() {
+		return dateOfBirth;
+	}
 
-    public void setDateOfBirth(LocalDate dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
+	public void setDateOfBirth(LocalDate dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
+	}
 
-    public String getPhone() {
-        return phone;
-    }
+	public String getPhone() {
+		return phone;
+	}
 
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
 
-    public String getAddress() {
-        return address;
-    }
+	public String getAddress() {
+		return address;
+	}
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
+	public void setAddress(String address) {
+		this.address = address;
+	}
 
-    public String getStatus() {
-        return status;
-    }
+	public Status getStatus() {
+		return status;
+	}
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
+	public void setStatus(Status status) {
+		this.status = status;
+	}
+
+    
 }

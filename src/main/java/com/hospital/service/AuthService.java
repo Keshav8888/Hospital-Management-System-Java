@@ -8,7 +8,6 @@ import com.hospital.dto.AuthResponse;
 import com.hospital.dto.LoginRequest;
 import com.hospital.dto.PatientRegisterRequest;
 import com.hospital.entity.Admin;
-import com.hospital.entity.Patient;
 import com.hospital.entity.User;
 import com.hospital.enums.Role;
 import com.hospital.enums.Status;
@@ -26,61 +25,23 @@ public class AuthService {
     private final PatientRepository patientRepository;
     private final AdminRepository adminRepository;
     private final PasswordEncoder passwordEncoder;
+    private final PatientService patientService;
     private final JwtUtil jwtUtil;
 
-    public AuthService(UserRepository userRepository, PatientRepository patientRepository, AdminRepository adminRepository, PasswordEncoder passwordEncoder,  JwtUtil jwtUtil) {
+    public AuthService(UserRepository userRepository, PatientRepository patientRepository, AdminRepository adminRepository, PasswordEncoder passwordEncoder, PatientService patientService,  JwtUtil jwtUtil) {
 
         this.userRepository = userRepository;
         this.patientRepository = patientRepository;
         this.adminRepository = adminRepository;
         this.passwordEncoder = passwordEncoder;
+        this.patientService = patientService;
         this.jwtUtil = jwtUtil;
     }
     
     @Transactional
     public void registerPatient(PatientRegisterRequest request) {
 
-    	if (userRepository.existsByEmail(request.getEmail())) {
-    	    throw new RuntimeException("Email already exists.");
-    	}
-    
-    User user = new User();
-
-    user.setEmail(request.getEmail());
-
-    user.setPassword(passwordEncoder.encode(request.getPassword()));
-
-    user.setRole(Role.PATIENT);
-
-    user.setStatus(Status.ACTIVE);
-    
-    userRepository.save(user);
-    
-    Patient patient = new Patient();
-
-    patient.setUser(user);
-
-    patient.setFirstName(request.getFirstName());
-
-    patient.setLastName(request.getLastName());
-
-    patient.setGender(request.getGender());
-
-    patient.setDateOfBirth(request.getDateOfBirth());
-
-    patient.setPhone(request.getPhone());
-
-    patient.setBloodGroup(request.getBloodGroup());
-
-    patient.setAddress(request.getAddress());
-
-    patient.setAllergies(request.getAllergies());
-
-    patient.setMedicalHistory(request.getMedicalHistory());
-
-    patient.setStatus(Status.ACTIVE);
-    
-    patientRepository.save(patient);
+    	 patientService.registerPatient(request);
     
 	}
     

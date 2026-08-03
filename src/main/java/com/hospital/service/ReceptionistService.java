@@ -3,10 +3,12 @@ package com.hospital.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.hospital.dto.ReceptionistProfileUpdateRequest;
 import com.hospital.dto.ReceptionistRegisterRequest;
 import com.hospital.dto.ReceptionistResponse;
 import com.hospital.dto.ReceptionistUpdateRequest;
@@ -26,9 +28,7 @@ public class ReceptionistService {
 
 	private final PasswordEncoder passwordEncoder;
 	
-	public ReceptionistService(UserRepository userRepository,
-            ReceptionistRepository receptionistRepository,
-            PasswordEncoder passwordEncoder) {
+	public ReceptionistService(UserRepository userRepository, ReceptionistRepository receptionistRepository, PasswordEncoder passwordEncoder) {
 
 		this.userRepository = userRepository;
 		this.receptionistRepository = receptionistRepository;
@@ -79,13 +79,76 @@ public class ReceptionistService {
         receptionistRepository.save(receptionist);
     }
 	
+	@Transactional(readOnly = true)
+	public ReceptionistResponse getMyProfile(Authentication authentication) {
+
+	    String email = authentication.getName();
+
+	    User user = userRepository.findByEmail(email).orElseThrow(() ->
+	                    new RuntimeException("User not found."));
+
+	    Receptionist receptionist = receptionistRepository.findByUserId(user.getId()).orElseThrow(() ->
+	                    new RuntimeException("Receptionist not found."));
+
+	    ReceptionistResponse response = new ReceptionistResponse();
+
+	    response.setId(receptionist.getId());
+
+	    response.setFirstName(receptionist.getFirstName());
+
+	    response.setLastName(receptionist.getLastName());
+
+	    response.setGender(receptionist.getGender());
+
+	    response.setDateOfBirth(receptionist.getDateOfBirth());
+
+	    response.setPhone(receptionist.getPhone());
+
+	    response.setAddress(receptionist.getAddress());
+
+	    response.setEmail(user.getEmail());
+
+	    response.setStatus(receptionist.getStatus());
+
+	    return response;
+	}
+	
+	@Transactional
+	public void updateMyProfile(ReceptionistProfileUpdateRequest request, Authentication authentication) {
+
+	    String email = authentication.getName();
+
+	    User user = userRepository.findByEmail(email).orElseThrow(() ->
+	                    new RuntimeException("User not found."));
+
+	    Receptionist receptionist = receptionistRepository.findByUserId(user.getId()).orElseThrow(() ->
+	                    new RuntimeException("Receptionist not found."));
+
+	    if (!receptionist.getPhone().equals(request.getPhone()) && receptionistRepository.existsByPhone(request.getPhone())) {
+
+	        throw new RuntimeException("Phone number already exists.");
+	    }
+
+	    receptionist.setFirstName(request.getFirstName());
+
+	    receptionist.setLastName(request.getLastName());
+
+	    receptionist.setGender(request.getGender());
+
+	    receptionist.setDateOfBirth(request.getDateOfBirth());
+
+	    receptionist.setPhone(request.getPhone());
+
+	    receptionist.setAddress(request.getAddress());
+
+	    receptionistRepository.save(receptionist);
+	}
+	
 	public List<ReceptionistResponse> getAllReceptionists() {
 
 		List<Receptionist> receptionists = receptionistRepository.findByStatus(Status.ACTIVE);
 	    
-		return receptionists.stream()
-	            .map(this::mapToResponse)
-	            .collect(Collectors.toList());
+		return receptionists.stream().map(this::mapToResponse).collect(Collectors.toList());
 	}
 	
 	private ReceptionistResponse mapToResponse(Receptionist receptionist) {
@@ -100,34 +163,31 @@ public class ReceptionistService {
 
 	    response.setEmail(receptionist.getUser().getEmail());
 
-	    response.setGender(receptionist.getGender().name());
-
+	    response.setGender(receptionist.getGender());
+	    
 	    response.setDateOfBirth(receptionist.getDateOfBirth());
 
 	    response.setPhone(receptionist.getPhone());
 
 	    response.setAddress(receptionist.getAddress());
 
-	    response.setStatus(receptionist.getStatus().name());
-
+	    response.setStatus(receptionist.getStatus());
+	    
 	    return response;
 	}
 	
 	public ReceptionistResponse getReceptionistById(Long id) {
 
-	    Receptionist receptionist = receptionistRepository.findById(id)
-	            .orElseThrow(() ->
+	    Receptionist receptionist = receptionistRepository.findById(id).orElseThrow(() ->
 	                    new RuntimeException("Receptionist not found."));
 
 	    return mapToResponse(receptionist);
 	}
 	
 	@Transactional
-	public void updateReceptionist(Long id,
-	        ReceptionistUpdateRequest request) {
+	public void updateReceptionist(Long id,ReceptionistUpdateRequest request) {
 
-	    Receptionist receptionist = receptionistRepository.findById(id)
-	            .orElseThrow(() ->
+	    Receptionist receptionist = receptionistRepository.findById(id).orElseThrow(() ->
 	                    new RuntimeException("Receptionist not found."));
 
 	    receptionist.setFirstName(request.getFirstName());
@@ -138,8 +198,7 @@ public class ReceptionistService {
 
 	    receptionist.setDateOfBirth(request.getDateOfBirth());
 
-	    if (!receptionist.getPhone().equals(request.getPhone())
-	            && receptionistRepository.existsByPhone(request.getPhone())) {
+	    if (!receptionist.getPhone().equals(request.getPhone()) && receptionistRepository.existsByPhone(request.getPhone())) {
 	        throw new RuntimeException("Phone number already exists.");
 	    }
 	    
@@ -153,12 +212,12 @@ public class ReceptionistService {
 	@Transactional
 	public void deleteReceptionist(Long id) {
 
-	    Receptionist receptionist = receptionistRepository.findById(id)
-	            .orElseThrow(() ->
+	    Receptionist receptionist = receptionistRepository.findById(id).orElseThrow(() ->
 	                    new RuntimeException("Receptionist not found."));
 
 	    receptionist.setStatus(Status.INACTIVE);
 
 	    receptionistRepository.save(receptionist);
 	}
+
 }
