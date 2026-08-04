@@ -11,7 +11,7 @@ public class TestController {
 		return "Welcome Patient!";
 	}
 	
-	@GetMapping("/api/admin/dashboard")
+	@GetMapping("/api/admin/profile")
 	public String adminDashboard() {
 		return "Welcome Admin!";
 	}

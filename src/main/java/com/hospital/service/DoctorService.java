@@ -2,6 +2,7 @@ package com.hospital.service;
 
 import org.springframework.stereotype.Service;
 
+import com.hospital.dto.DoctorProfileUpdateRequest;
 import com.hospital.dto.DoctorRegisterRequest;
 import com.hospital.dto.DoctorResponse;
 import com.hospital.dto.DoctorUpdateRequest;
@@ -17,6 +18,7 @@ import com.hospital.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import jakarta.transaction.Transactional;
@@ -28,7 +30,7 @@ public class DoctorService {
     private final DepartmentRepository departmentRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-
+    
     public DoctorService(DoctorRepository doctorRepository,DepartmentRepository departmentRepository,UserRepository userRepository,PasswordEncoder passwordEncoder) {
 
         this.doctorRepository = doctorRepository;
@@ -40,24 +42,18 @@ public class DoctorService {
     @Transactional
     public void registerDoctor(DoctorRegisterRequest request) {
 
-        // 1. Check Email
-
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email already exists.");
+            
+        	throw new RuntimeException("Email already exists.");
         }
-
-        // 2. Check Phone
 
         if (doctorRepository.existsByPhone(request.getPhone())) {
-            throw new RuntimeException("Phone number already exists.");
+            
+        	throw new RuntimeException("Phone number already exists.");
         }
 
-        // 3. Find Department
-
-        Department department = departmentRepository.findById(request.getDepartmentId())
-                .orElseThrow(() -> new RuntimeException("Department not found."));
-
-        // 4. Create User
+        Department department = departmentRepository.findById(request.getDepartmentId()).orElseThrow(() -> 
+        						new RuntimeException("Department not found."));
 
         User user = new User();
 
@@ -70,8 +66,6 @@ public class DoctorService {
         user.setStatus(Status.ACTIVE);
 
         userRepository.save(user);
-
-        // 5. Create Doctor
 
         Doctor doctor = new Doctor();
 
@@ -115,15 +109,25 @@ public class DoctorService {
             DoctorResponse dto = new DoctorResponse();
 
             dto.setId(doctor.getId());
+
             dto.setFirstName(doctor.getFirstName());
+
             dto.setLastName(doctor.getLastName());
+
             dto.setDepartment(doctor.getDepartment().getName());
+
             dto.setSpecialization(doctor.getSpecialization());
+
             dto.setQualification(doctor.getQualification());
+            
             dto.setExperience(doctor.getExperience());
+
             dto.setConsultantionFee(doctor.getConsultantionFee());
+
             dto.setPhone(doctor.getPhone());
+
             dto.setEmail(doctor.getUser().getEmail());
+
             dto.setStatus(doctor.getStatus().name());
 
             response.add(dto);
@@ -134,21 +138,31 @@ public class DoctorService {
     
     public DoctorResponse getDoctorById(Long id) {
 
-        Doctor doctor = doctorRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Doctor not found."));
+        Doctor doctor = doctorRepository.findById(id).orElseThrow(() -> 
+        				new RuntimeException("Doctor not found."));
 
         DoctorResponse response = new DoctorResponse();
 
         response.setId(doctor.getId());
+
         response.setFirstName(doctor.getFirstName());
+
         response.setLastName(doctor.getLastName());
+
         response.setDepartment(doctor.getDepartment().getName());
+
         response.setSpecialization(doctor.getSpecialization());
+
         response.setQualification(doctor.getQualification());
+
         response.setExperience(doctor.getExperience());
+
         response.setConsultantionFee(doctor.getConsultantionFee());
+
         response.setPhone(doctor.getPhone());
+
         response.setEmail(doctor.getUser().getEmail());
+
         response.setStatus(doctor.getStatus().name());
 
         return response;
@@ -157,25 +171,16 @@ public class DoctorService {
     @Transactional
     public void updateDoctor(Long id, DoctorUpdateRequest request) {
 
-        // 1. Find Doctor
+        Doctor doctor = doctorRepository.findById(id).orElseThrow(() -> 
+        				new RuntimeException("Doctor not found."));
 
-        Doctor doctor = doctorRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Doctor not found."));
+        Department department = departmentRepository.findById(request.getDepartmentId()).orElseThrow(() -> 
+        						new RuntimeException("Department not found."));
 
-        // 2. Find Department
-
-        Department department = departmentRepository.findById(request.getDepartmentId())
-                .orElseThrow(() -> new RuntimeException("Department not found."));
-
-        // 3. Check if another doctor is using the same phone number
-
-        if (!doctor.getPhone().equals(request.getPhone())
-                && doctorRepository.existsByPhone(request.getPhone())) {
+        if (!doctor.getPhone().equals(request.getPhone()) && doctorRepository.existsByPhone(request.getPhone())) {
 
             throw new RuntimeException("Phone number already exists.");
         }
-
-        // 4. Update Doctor Details
 
         doctor.setFirstName(request.getFirstName());
 
@@ -197,19 +202,95 @@ public class DoctorService {
 
         doctor.setAddress(request.getAddress());
 
-        // 5. Save Updated Doctor
-
         doctorRepository.save(doctor);
     }
     
     @Transactional
     public void deleteDoctor(Long id) {
 
-        Doctor doctor = doctorRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Doctor not found."));
+        Doctor doctor = doctorRepository.findById(id).orElseThrow(() -> 
+        				new RuntimeException("Doctor not found."));
 
         doctor.setStatus(Status.INACTIVE);
 
         doctorRepository.save(doctor);
+    }
+    
+    @Transactional
+    public DoctorResponse getMyProfile(Authentication authentication) {
+
+        String email = authentication.getName();
+
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                    new RuntimeException("User not found."));
+
+        Doctor doctor = doctorRepository.findByUserId(user.getId()).orElseThrow(() ->
+                        new RuntimeException("Doctor not found."));
+
+        return mapToResponse(doctor);
+    }
+    
+    @Transactional
+    public void updateMyProfile(DoctorProfileUpdateRequest request, Authentication authentication) {
+
+        String email = authentication.getName();
+
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+        			new RuntimeException("User not found."));
+
+        Doctor doctor = doctorRepository.findByUserId(user.getId()).orElseThrow(() ->
+                        new RuntimeException("Doctor not found."));
+
+        if (!doctor.getPhone().equals(request.getPhone()) && doctorRepository.existsByPhone(request.getPhone())) {
+
+            throw new RuntimeException("Phone number already exists.");
+        }
+
+        doctor.setFirstName(request.getFirstName());
+
+        doctor.setLastName(request.getLastName());
+
+        doctor.setGender(request.getGender());
+
+        doctor.setDateOfBirth(request.getDateOfBirth());
+
+        doctor.setPhone(request.getPhone());
+
+        doctor.setQualification(request.getQualification());
+
+        doctor.setSpecialization(request.getSpecialization());
+
+        doctor.setAddress(request.getAddress());
+
+        doctorRepository.save(doctor);
+    }
+    
+    private DoctorResponse mapToResponse(Doctor doctor) {
+
+        DoctorResponse response = new DoctorResponse();
+
+        response.setId(doctor.getId());
+
+        response.setFirstName(doctor.getFirstName());
+
+        response.setLastName(doctor.getLastName());
+
+        response.setDepartment(doctor.getDepartment().getName());
+
+        response.setSpecialization(doctor.getSpecialization());
+
+        response.setQualification(doctor.getQualification());
+
+        response.setExperience(doctor.getExperience());
+
+        response.setConsultantionFee(doctor.getConsultantionFee());
+
+        response.setPhone(doctor.getPhone());
+
+        response.setEmail(doctor.getUser().getEmail());
+
+        response.setStatus(doctor.getStatus().name());
+
+        return response;
     }
 }

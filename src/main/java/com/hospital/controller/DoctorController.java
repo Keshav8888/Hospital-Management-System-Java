@@ -67,5 +67,5 @@ public class DoctorController {
 
         return ResponseEntity.ok("Doctor deactivated successfully.");
     }
-
+    
 }

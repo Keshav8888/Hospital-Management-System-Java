@@ -17,4 +17,6 @@ public interface DoctorRepository extends JpaRepository<Doctor, Long> {
     List<Doctor> findBySpecialization(String specialization);
 
     Optional<Doctor> findByUserId(Long userId);
+    
+    long countByStatus(com.hospital.enums.Status status);
 }

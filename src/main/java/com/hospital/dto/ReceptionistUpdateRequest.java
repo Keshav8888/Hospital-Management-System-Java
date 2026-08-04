@@ -25,10 +25,7 @@ public class ReceptionistUpdateRequest {
     private LocalDate dateOfBirth;
 
     @NotBlank(message = "Phone number is required.")
-    @Pattern(
-            regexp = "^[6-9]\\d{9}$",
-            message = "Invalid phone number."
-    )
+    @Pattern(regexp = "^\\d{10}$", message = "Phone number must contain exactly 10 digits.")
     private String phone;
 
     @NotBlank(message = "Address is required.")

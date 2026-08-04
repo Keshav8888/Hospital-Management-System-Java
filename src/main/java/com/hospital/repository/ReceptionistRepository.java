@@ -15,4 +15,6 @@ public interface ReceptionistRepository extends JpaRepository<Receptionist, Long
     boolean existsByPhone(String phone);
     
     List<Receptionist> findByStatus(Status status);
+    
+    long countByStatus(Status status);
 }
