@@ -15,9 +15,9 @@ import com.hospital.repository.DepartmentRepository;
 import com.hospital.repository.DoctorRepository;
 import com.hospital.repository.UserRepository;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -98,43 +98,43 @@ public class DoctorService {
         doctorRepository.save(doctor);
     }
     
-    public List<DoctorResponse> getAllDoctors() {
-
-        List<Doctor> doctors = doctorRepository.findAll();
-
-        List<DoctorResponse> response = new ArrayList<>();
-
-        for (Doctor doctor : doctors) {
-
-            DoctorResponse dto = new DoctorResponse();
-
-            dto.setId(doctor.getId());
-
-            dto.setFirstName(doctor.getFirstName());
-
-            dto.setLastName(doctor.getLastName());
-
-            dto.setDepartment(doctor.getDepartment().getName());
-
-            dto.setSpecialization(doctor.getSpecialization());
-
-            dto.setQualification(doctor.getQualification());
-            
-            dto.setExperience(doctor.getExperience());
-
-            dto.setConsultantionFee(doctor.getConsultantionFee());
-
-            dto.setPhone(doctor.getPhone());
-
-            dto.setEmail(doctor.getUser().getEmail());
-
-            dto.setStatus(doctor.getStatus().name());
-
-            response.add(dto);
-        }
-
-        return response;
-    }
+//    public List<DoctorResponse> getAllDoctors() {
+//
+//        List<Doctor> doctors = doctorRepository.findAll();
+//
+//        List<DoctorResponse> response = new ArrayList<>();
+//
+//        for (Doctor doctor : doctors) {
+//
+//            DoctorResponse dto = new DoctorResponse();
+//
+//            dto.setId(doctor.getId());
+//
+//            dto.setFirstName(doctor.getFirstName());
+//
+//            dto.setLastName(doctor.getLastName());
+//
+//            dto.setDepartment(doctor.getDepartment().getName());
+//
+//            dto.setSpecialization(doctor.getSpecialization());
+//
+//            dto.setQualification(doctor.getQualification());
+//            
+//            dto.setExperience(doctor.getExperience());
+//
+//            dto.setConsultantionFee(doctor.getConsultantionFee());
+//
+//            dto.setPhone(doctor.getPhone());
+//
+//            dto.setEmail(doctor.getUser().getEmail());
+//
+//            dto.setStatus(doctor.getStatus().name());
+//
+//            response.add(dto);
+//        }
+//
+//        return response;
+//    }
     
     public DoctorResponse getDoctorById(Long id) {
 
@@ -263,6 +263,125 @@ public class DoctorService {
         doctor.setAddress(request.getAddress());
 
         doctorRepository.save(doctor);
+    }
+    
+//    public List<DoctorResponse> searchDoctors(String keyword) {
+//
+//        List<Doctor> doctors = doctorRepository.findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCaseOrSpecializationContainingIgnoreCase(keyword, keyword, keyword);
+//
+//        List<DoctorResponse> response = new ArrayList<>();
+//
+//        for (Doctor doctor : doctors) {
+//
+//            DoctorResponse dto = new DoctorResponse();
+//
+//            dto.setId(doctor.getId());
+//
+//            dto.setFirstName(doctor.getFirstName());
+//
+//            dto.setLastName(doctor.getLastName());
+//
+//            dto.setDepartment(doctor.getDepartment().getName());
+//
+//            dto.setSpecialization(doctor.getSpecialization());
+//
+//            dto.setQualification(doctor.getQualification());
+//
+//            dto.setExperience(doctor.getExperience());
+//
+//            dto.setConsultantionFee(doctor.getConsultantionFee());
+//
+//            dto.setPhone(doctor.getPhone());
+//
+//            dto.setEmail(doctor.getUser().getEmail());
+//
+//            dto.setStatus(doctor.getStatus().name());
+//
+//            response.add(dto);
+//        }
+//
+//        return response;
+//    }
+//    
+//    public Page<DoctorResponse> getDoctors(int page, int size) {
+//
+//        Pageable pageable = PageRequest.of(page, size);
+//
+//        Page<Doctor> doctorPage = doctorRepository.findAll(pageable);
+//
+//        return doctorPage.map(doctor -> {
+//
+//            DoctorResponse response = new DoctorResponse();
+//
+//            response.setId(doctor.getId());
+//
+//            response.setFirstName(doctor.getFirstName());
+//
+//            response.setLastName(doctor.getLastName());
+//
+//            response.setDepartment(doctor.getDepartment().getName());
+//
+//            response.setSpecialization(doctor.getSpecialization());
+//
+//            response.setQualification(doctor.getQualification());
+//
+//            response.setExperience(doctor.getExperience());
+//
+//            response.setConsultantionFee(doctor.getConsultantionFee());
+//
+//            response.setPhone(doctor.getPhone());
+//
+//            response.setEmail(doctor.getUser().getEmail());
+//
+//            response.setStatus(doctor.getStatus().name());
+//
+//            return response;
+//        });
+//    }
+    
+    public Page<DoctorResponse> getDoctors(String keyword, int page, int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Doctor> doctorPage;
+
+        if (keyword == null || keyword.trim().isEmpty()) {
+
+            doctorPage = doctorRepository.findAll(pageable);
+
+        } else {
+
+            doctorPage = doctorRepository.findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCaseOrSpecializationContainingIgnoreCase(keyword, keyword, keyword, pageable);
+        }
+
+        return doctorPage.map(doctor -> {
+
+            DoctorResponse response = new DoctorResponse();
+
+            response.setId(doctor.getId());
+
+            response.setFirstName(doctor.getFirstName());
+
+            response.setLastName(doctor.getLastName());
+
+            response.setDepartment(doctor.getDepartment().getName());
+
+            response.setSpecialization(doctor.getSpecialization());
+
+            response.setQualification(doctor.getQualification());
+
+            response.setExperience(doctor.getExperience());
+
+            response.setConsultantionFee(doctor.getConsultantionFee());
+
+            response.setPhone(doctor.getPhone());
+
+            response.setEmail(doctor.getUser().getEmail());
+
+            response.setStatus(doctor.getStatus().name());
+
+            return response;
+        });
     }
     
     private DoctorResponse mapToResponse(Doctor doctor) {

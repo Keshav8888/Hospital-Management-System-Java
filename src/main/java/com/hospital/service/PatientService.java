@@ -1,8 +1,8 @@
 package com.hospital.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -88,50 +88,38 @@ public class PatientService {
 	    registerPatient(request);
 	}
 	
-    public List<PatientResponse> getAllPatients() {
+//    public List<PatientResponse> getAllPatients() {
+//
+//        List<Patient> patients = patientRepository.findAll();
+//
+//        return patients.stream().map(this::convertToResponse).collect(Collectors.toList());
+//    }
+//    
+//    public List<PatientResponse> searchPatients(String keyword) {
+//
+//        List<Patient> patients = patientRepository.findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCaseOrPhoneContainingOrUserEmailContainingIgnoreCase(keyword, keyword, keyword, keyword);
+//
+//        return patients.stream().map(this::convertToResponse).collect(Collectors.toList());
+//    }
+	
+	public Page<PatientResponse> getPatients(String keyword, int page, int size) {
 
-        List<Patient> patients = patientRepository.findAll();
+	    Pageable pageable = PageRequest.of(page, size);
 
-        return patients.stream().map(this::convertToResponse).collect(Collectors.toList());
-    }
+	    Page<Patient> patientPage;
+
+	    if (keyword == null || keyword.trim().isEmpty()) {
+
+	        patientPage = patientRepository.findAll(pageable);
+
+	    } else {
+
+	        patientPage = patientRepository.findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCaseOrPhoneContainingIgnoreCaseOrUserEmailContainingIgnoreCase(keyword, keyword, keyword, keyword, pageable);
+	    }
+
+	    return patientPage.map(this::convertToResponse);
+	}
     
-    public List<PatientResponse> searchPatients(String keyword) {
-
-        List<Patient> patients = patientRepository.findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCaseOrPhoneContainingOrUserEmailContainingIgnoreCase(keyword, keyword, keyword, keyword);
-
-        return patients.stream().map(this::convertToResponse).collect(Collectors.toList());
-    }
-    
-    private PatientResponse convertToResponse(Patient patient) {
-
-        PatientResponse response = new PatientResponse();
-
-        response.setId(patient.getId());
-
-        response.setFirstName(patient.getFirstName());
-
-        response.setLastName(patient.getLastName());
-
-        response.setEmail(patient.getUser().getEmail());
-
-        response.setGender(patient.getGender().name());
-
-        response.setDateOfBirth(patient.getDateOfBirth());
-
-        response.setPhone(patient.getPhone());
-
-        response.setBloodGroup(patient.getBloodGroup());
-
-        response.setAddress(patient.getAddress());
-
-        response.setAllergies(patient.getAllergies());
-
-        response.setMedicalHistory(patient.getMedicalHistory());
-
-        response.setStatus(patient.getStatus().name());
-
-        return response;
-    }
     
     public PatientResponse getPatientById(Long id) {
 
@@ -182,6 +170,37 @@ public class PatientService {
         patient.setStatus(Status.INACTIVE);
 
         patientRepository.save(patient);
+    }
+    
+    private PatientResponse convertToResponse(Patient patient) {
+
+        PatientResponse response = new PatientResponse();
+
+        response.setId(patient.getId());
+
+        response.setFirstName(patient.getFirstName());
+
+        response.setLastName(patient.getLastName());
+
+        response.setEmail(patient.getUser().getEmail());
+
+        response.setGender(patient.getGender().name());
+
+        response.setDateOfBirth(patient.getDateOfBirth());
+
+        response.setPhone(patient.getPhone());
+
+        response.setBloodGroup(patient.getBloodGroup());
+
+        response.setAddress(patient.getAddress());
+
+        response.setAllergies(patient.getAllergies());
+
+        response.setMedicalHistory(patient.getMedicalHistory());
+
+        response.setStatus(patient.getStatus().name());
+
+        return response;
     }
 
 }

@@ -16,6 +16,42 @@ import jakarta.servlet.http.HttpServletRequest;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+	@ExceptionHandler(ResourceNotFoundException.class)
+	public ResponseEntity<ErrorResponse> handleResourceNotFound(ResourceNotFoundException ex, HttpServletRequest request) {
+
+	    ErrorResponse error = new ErrorResponse();
+
+	    error.setTimestamp(LocalDateTime.now());
+
+	    error.setStatus(HttpStatus.NOT_FOUND.value());
+
+	    error.setError(HttpStatus.NOT_FOUND.getReasonPhrase());
+
+	    error.setMessage(ex.getMessage());
+
+	    error.setPath(request.getRequestURI());
+
+	    return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+	}
+	
+	@ExceptionHandler(DuplicateResourceException.class)
+	public ResponseEntity<ErrorResponse> handleDuplicateResource(DuplicateResourceException ex, HttpServletRequest request) {
+
+	    ErrorResponse error = new ErrorResponse();
+
+	    error.setTimestamp(LocalDateTime.now());
+
+	    error.setStatus(HttpStatus.CONFLICT.value());
+
+	    error.setError(HttpStatus.CONFLICT.getReasonPhrase());
+
+	    error.setMessage(ex.getMessage());
+
+	    error.setPath(request.getRequestURI());
+
+	    return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+	}
+	
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException ex, HttpServletRequest request) {
 

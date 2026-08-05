@@ -1,7 +1,6 @@
 package com.hospital.controller;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -34,17 +33,17 @@ public class ReceptionistPatientController {
         return ResponseEntity.status(HttpStatus.CREATED).body("Patient registered successfully.");
     }
     
-    @GetMapping
-    public ResponseEntity<List<PatientResponse>> getAllPatients() {
-
-        return ResponseEntity.ok(patientService.getAllPatients());
-    }
-    
-    @GetMapping("/search")
-    public ResponseEntity<List<PatientResponse>> searchPatients(@RequestParam String keyword) {
-
-        return ResponseEntity.ok(patientService.searchPatients(keyword));
-    }
+//    @GetMapping
+//    public ResponseEntity<List<PatientResponse>> getAllPatients() {
+//
+//        return ResponseEntity.ok(patientService.getAllPatients());
+//    }
+//    
+//    @GetMapping("/search")
+//    public ResponseEntity<List<PatientResponse>> searchPatients(@RequestParam String keyword) {
+//
+//        return ResponseEntity.ok(patientService.searchPatients(keyword));
+//    }
     
     @GetMapping("/{id}")
     public ResponseEntity<PatientResponse> getPatientById(@PathVariable Long id) {
@@ -66,5 +65,12 @@ public class ReceptionistPatientController {
         patientService.deletePatient(id);
 
         return ResponseEntity.ok("Patient deactivated successfully.");
+    }
+    
+    @GetMapping
+    public ResponseEntity<Page<PatientResponse>> getPatients(@RequestParam(required = false) String keyword, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+
+        return ResponseEntity.ok(
+                patientService.getPatients(keyword, page, size));
     }
 }

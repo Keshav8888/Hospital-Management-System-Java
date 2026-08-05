@@ -1,8 +1,8 @@
 package com.hospital.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -144,36 +144,29 @@ public class ReceptionistService {
 	    receptionistRepository.save(receptionist);
 	}
 	
-	public List<ReceptionistResponse> getAllReceptionists() {
-
-		List<Receptionist> receptionists = receptionistRepository.findByStatus(Status.ACTIVE);
-	    
-		return receptionists.stream().map(this::mapToResponse).collect(Collectors.toList());
-	}
+//	public List<ReceptionistResponse> getAllReceptionists() {
+//
+//		List<Receptionist> receptionists = receptionistRepository.findByStatus(Status.ACTIVE);
+//	    
+//		return receptionists.stream().map(this::mapToResponse).collect(Collectors.toList());
+//	}
 	
-	private ReceptionistResponse mapToResponse(Receptionist receptionist) {
+	public Page<ReceptionistResponse> getReceptionists(String keyword, int page, int size) {
 
-	    ReceptionistResponse response = new ReceptionistResponse();
+	    Pageable pageable = PageRequest.of(page, size);
 
-	    response.setId(receptionist.getId());
+	    Page<Receptionist> receptionistPage;
 
-	    response.setFirstName(receptionist.getFirstName());
+	    if (keyword == null || keyword.trim().isEmpty()) {
 
-	    response.setLastName(receptionist.getLastName());
+	        receptionistPage = receptionistRepository.findAll(pageable);
 
-	    response.setEmail(receptionist.getUser().getEmail());
+	    } else {
 
-	    response.setGender(receptionist.getGender());
-	    
-	    response.setDateOfBirth(receptionist.getDateOfBirth());
+	        receptionistPage = receptionistRepository.findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCaseOrPhoneContainingIgnoreCaseOrUserEmailContainingIgnoreCase(keyword, keyword, keyword, keyword, pageable);
+	    }
 
-	    response.setPhone(receptionist.getPhone());
-
-	    response.setAddress(receptionist.getAddress());
-
-	    response.setStatus(receptionist.getStatus());
-	    
-	    return response;
+	    return receptionistPage.map(this::mapToResponse);
 	}
 	
 	public ReceptionistResponse getReceptionistById(Long id) {
@@ -219,5 +212,31 @@ public class ReceptionistService {
 
 	    receptionistRepository.save(receptionist);
 	}
+	
+	private ReceptionistResponse mapToResponse(Receptionist receptionist) {
+
+	    ReceptionistResponse response = new ReceptionistResponse();
+
+	    response.setId(receptionist.getId());
+
+	    response.setFirstName(receptionist.getFirstName());
+
+	    response.setLastName(receptionist.getLastName());
+
+	    response.setEmail(receptionist.getUser().getEmail());
+
+	    response.setGender(receptionist.getGender());
+	    
+	    response.setDateOfBirth(receptionist.getDateOfBirth());
+
+	    response.setPhone(receptionist.getPhone());
+
+	    response.setAddress(receptionist.getAddress());
+
+	    response.setStatus(receptionist.getStatus());
+	    
+	    return response;
+	}
+	
 
 }

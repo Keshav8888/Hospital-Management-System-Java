@@ -1,7 +1,6 @@
 package com.hospital.controller;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -22,37 +21,32 @@ public class DoctorController {
     private final DoctorService doctorService;
 
     public DoctorController(DoctorService doctorService) {
-        this.doctorService = doctorService;
+        
+    	this.doctorService = doctorService;
     }
 
     @PostMapping
-    public ResponseEntity<String> registerDoctor(
-            @Valid @RequestBody DoctorRegisterRequest request) {
+    public ResponseEntity<String> registerDoctor(@Valid @RequestBody DoctorRegisterRequest request) {
 
         doctorService.registerDoctor(request);
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body("Doctor registered successfully.");
+        return ResponseEntity.status(HttpStatus.CREATED).body("Doctor registered successfully.");
     }
     
-    @GetMapping
-    public ResponseEntity<List<DoctorResponse>> getAllDoctors() {
-
-        return ResponseEntity.ok(doctorService.getAllDoctors());
-    }
+//    @GetMapping
+//    public ResponseEntity<List<DoctorResponse>> getAllDoctors() {
+//
+//        return ResponseEntity.ok(doctorService.getAllDoctors());
+//    }
     
     @GetMapping("/{id}")
-    public ResponseEntity<DoctorResponse> getDoctorById(
-            @PathVariable Long id) {
+    public ResponseEntity<DoctorResponse> getDoctorById(@PathVariable Long id) {
 
-        return ResponseEntity.ok(
-                doctorService.getDoctorById(id));
+        return ResponseEntity.ok(doctorService.getDoctorById(id));
     }
     
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateDoctor(
-            @PathVariable Long id,
-            @Valid @RequestBody DoctorUpdateRequest request) {
+    public ResponseEntity<String> updateDoctor(@PathVariable Long id, @Valid @RequestBody DoctorUpdateRequest request) {
 
         doctorService.updateDoctor(id, request);
 
@@ -60,12 +54,29 @@ public class DoctorController {
     }
     
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteDoctor(
-            @PathVariable Long id) {
+    public ResponseEntity<String> deleteDoctor(@PathVariable Long id) {
 
         doctorService.deleteDoctor(id);
 
         return ResponseEntity.ok("Doctor deactivated successfully.");
+    }
+    
+//    @GetMapping("/search")
+//    public ResponseEntity<List<DoctorResponse>> searchDoctors(@RequestParam String keyword) {
+//
+//        return ResponseEntity.ok(doctorService.searchDoctors(keyword));
+//    }
+//    
+//    @GetMapping("/page")
+//    public ResponseEntity<Page<DoctorResponse>> getDoctors(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+//
+//        return ResponseEntity.ok(doctorService.getDoctors(page, size));
+//    }
+    
+    @GetMapping
+    public ResponseEntity<Page<DoctorResponse>> getDoctors(@RequestParam(required = false) String keyword, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+
+        return ResponseEntity.ok(doctorService.getDoctors(keyword, page, size));
     }
     
 }
