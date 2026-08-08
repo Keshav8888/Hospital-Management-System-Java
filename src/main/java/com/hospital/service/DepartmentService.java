@@ -1,7 +1,8 @@
 package com.hospital.service;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.hospital.dto.DepartmentRequest;
@@ -42,11 +43,29 @@ public class DepartmentService {
         return convertToResponse(savedDepartment);
     }
     
-    public List<DepartmentResponse> getAllDepartments() {
+//    public List<DepartmentResponse> getAllDepartments() {
+//
+//        List<Department> departments = departmentRepository.findAll();
+//
+//        return departments.stream().map(this::convertToResponse).toList();
+//    }
+    
+    public Page<DepartmentResponse> getDepartments(String keyword, int page, int size) {
 
-        List<Department> departments = departmentRepository.findAll();
+        Pageable pageable = PageRequest.of(page, size);
 
-        return departments.stream().map(this::convertToResponse).toList();
+        Page<Department> departmentPage;
+
+        if (keyword == null || keyword.trim().isEmpty()) {
+
+            departmentPage = departmentRepository.findAll(pageable);
+
+        } else {
+
+            departmentPage = departmentRepository.findByNameContainingIgnoreCaseOrLocationContainingIgnoreCase(keyword, keyword, pageable);
+        }
+
+        return departmentPage.map(this::convertToResponse);
     }
     
     public DepartmentResponse getDepartmentById(Long id) {

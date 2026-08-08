@@ -98,6 +98,51 @@ public class DoctorService {
         doctorRepository.save(doctor);
     }
     
+    public Page<DoctorResponse> getDoctors(String keyword, int page, int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Doctor> doctorPage;
+
+        if (keyword == null || keyword.trim().isEmpty()) {
+
+            doctorPage = doctorRepository.findAll(pageable);
+
+        } else {
+
+            doctorPage = doctorRepository.findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCaseOrSpecializationContainingIgnoreCase(keyword, keyword, keyword, pageable);
+        }
+
+        return doctorPage.map(doctor -> {
+
+            DoctorResponse response = new DoctorResponse();
+
+            response.setId(doctor.getId());
+
+            response.setFirstName(doctor.getFirstName());
+
+            response.setLastName(doctor.getLastName());
+
+            response.setDepartment(doctor.getDepartment().getName());
+
+            response.setSpecialization(doctor.getSpecialization());
+
+            response.setQualification(doctor.getQualification());
+
+            response.setExperience(doctor.getExperience());
+
+            response.setConsultantionFee(doctor.getConsultantionFee());
+
+            response.setPhone(doctor.getPhone());
+
+            response.setEmail(doctor.getUser().getEmail());
+
+            response.setStatus(doctor.getStatus().name());
+
+            return response;
+        });
+    }
+    
 //    public List<DoctorResponse> getAllDoctors() {
 //
 //        List<Doctor> doctors = doctorRepository.findAll();
@@ -339,50 +384,6 @@ public class DoctorService {
 //        });
 //    }
     
-    public Page<DoctorResponse> getDoctors(String keyword, int page, int size) {
-
-        Pageable pageable = PageRequest.of(page, size);
-
-        Page<Doctor> doctorPage;
-
-        if (keyword == null || keyword.trim().isEmpty()) {
-
-            doctorPage = doctorRepository.findAll(pageable);
-
-        } else {
-
-            doctorPage = doctorRepository.findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCaseOrSpecializationContainingIgnoreCase(keyword, keyword, keyword, pageable);
-        }
-
-        return doctorPage.map(doctor -> {
-
-            DoctorResponse response = new DoctorResponse();
-
-            response.setId(doctor.getId());
-
-            response.setFirstName(doctor.getFirstName());
-
-            response.setLastName(doctor.getLastName());
-
-            response.setDepartment(doctor.getDepartment().getName());
-
-            response.setSpecialization(doctor.getSpecialization());
-
-            response.setQualification(doctor.getQualification());
-
-            response.setExperience(doctor.getExperience());
-
-            response.setConsultantionFee(doctor.getConsultantionFee());
-
-            response.setPhone(doctor.getPhone());
-
-            response.setEmail(doctor.getUser().getEmail());
-
-            response.setStatus(doctor.getStatus().name());
-
-            return response;
-        });
-    }
     
     private DoctorResponse mapToResponse(Doctor doctor) {
 

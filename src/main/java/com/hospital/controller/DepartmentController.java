@@ -1,7 +1,6 @@
 package com.hospital.controller;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hospital.dto.DepartmentRequest;
@@ -38,11 +38,17 @@ public class DepartmentController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 	
+//	@GetMapping
+//    public ResponseEntity<List<DepartmentResponse>> getAllDepartments() {
+//
+//        return ResponseEntity.ok(departmentService.getAllDepartments());
+//    }
+	
 	@GetMapping
-    public ResponseEntity<List<DepartmentResponse>> getAllDepartments() {
+	public ResponseEntity<Page<DepartmentResponse>> getDepartments(@RequestParam(required = false) String keyword, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
 
-        return ResponseEntity.ok(departmentService.getAllDepartments());
-    }
+	    return ResponseEntity.ok(departmentService.getDepartments(keyword, page, size));
+	}
 
     @GetMapping("/{id}")
     public ResponseEntity<DepartmentResponse> getDepartmentById(@PathVariable Long id) {
