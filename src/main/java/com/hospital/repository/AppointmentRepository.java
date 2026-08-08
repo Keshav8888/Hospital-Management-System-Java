@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.hospital.entity.Appointment;
@@ -32,14 +34,14 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 	List<Appointment> findAllByOrderByAppointmentDateAscAppointmentTimeAsc();
 	
 	boolean existsByDoctorAndAppointmentDateAndAppointmentTime(Doctor doctor, LocalDate appointmentDate, LocalTime appointmentTime);
-
-	List<Appointment> findByAppointmentNumberContainingIgnoreCaseOrPatientFirstNameContainingIgnoreCaseOrPatientLastNameContainingIgnoreCaseOrDoctorFirstNameContainingIgnoreCaseOrDoctorLastNameContainingIgnoreCase(String appointmentNumber, String patientFirstName, String patientLastName, String doctorFirstName, String doctorLastName);
 	
 	boolean existsByDoctorAndAppointmentDateAndAppointmentTimeAndIdNot(Doctor doctor, LocalDate appointmentDate, LocalTime appointmentTime, Long id);
 	
 	long countByStatus(AppointmentStatus status);
 
 	long countByAppointmentDate(LocalDate appointmentDate);
+	
+	Page<Appointment> findByAppointmentNumberContainingIgnoreCaseOrPatientFirstNameContainingIgnoreCaseOrPatientLastNameContainingIgnoreCaseOrDoctorFirstNameContainingIgnoreCaseOrDoctorLastNameContainingIgnoreCase(String appointmentNumber, String patientFirstName, String patientLastName, String doctorFirstName, String doctorLastName, Pageable pageable);
 
 	long count();
 	

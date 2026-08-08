@@ -21,47 +21,33 @@ public class PatientAppointmentController {
 
     private final AppointmentService appointmentService;
 
-    public PatientAppointmentController(
-            AppointmentService appointmentService) {
+    public PatientAppointmentController(AppointmentService appointmentService) {
 
         this.appointmentService = appointmentService;
     }
 
     @PostMapping
-    public ResponseEntity<AppointmentResponse> bookAppointment(
-            @Valid @RequestBody AppointmentBookingRequest request,
-            Authentication authentication) {
+    public ResponseEntity<AppointmentResponse> bookAppointment(@Valid @RequestBody AppointmentBookingRequest request, Authentication authentication) {
 
-        AppointmentResponse response =
-                appointmentService.bookAppointment(
-                        request,
-                        authentication);
+        AppointmentResponse response = appointmentService.bookAppointment(request, authentication);
 
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
     
     @GetMapping
-    public ResponseEntity<List<AppointmentResponse>> getMyAppointments(
-            Authentication authentication) {
+    public ResponseEntity<List<AppointmentResponse>> getMyAppointments(Authentication authentication) {
 
-        return ResponseEntity.ok(
-                appointmentService.getMyAppointments(authentication));
+        return ResponseEntity.ok(appointmentService.getMyAppointments(authentication));
     }
     
     @GetMapping("/{id}")
-    public ResponseEntity<AppointmentResponse> getMyAppointmentById(
-            @PathVariable Long id,
-            Authentication authentication) {
+    public ResponseEntity<AppointmentResponse> getMyAppointmentById(@PathVariable Long id, Authentication authentication) {
 
         return ResponseEntity.ok(appointmentService.getMyAppointmentById(id, authentication));
     }
     
     @PutMapping("/{id}/cancel")
-    public ResponseEntity<String> cancelAppointment(
-            @PathVariable Long id,
-            Authentication authentication) {
+    public ResponseEntity<String> cancelAppointment(@PathVariable Long id, Authentication authentication) {
 
         appointmentService.cancelAppointment(id, authentication);
 

@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -160,6 +163,24 @@ public class AppointmentService {
 	    Appointment savedAppointment = appointmentRepository.save(appointment);
 	    
 	    return convertToResponse(savedAppointment);
+	}
+	
+	public Page<AppointmentResponse> getAppointments(String keyword, int page, int size) {
+
+	    Pageable pageable = PageRequest.of(page, size);
+
+	    Page<Appointment> appointmentPage;
+
+	    if (keyword == null || keyword.trim().isEmpty()) {
+
+	        appointmentPage = appointmentRepository.findAll(pageable);
+
+	    } else {
+
+	        appointmentPage = appointmentRepository.findByAppointmentNumberContainingIgnoreCaseOrPatientFirstNameContainingIgnoreCaseOrPatientLastNameContainingIgnoreCaseOrDoctorFirstNameContainingIgnoreCaseOrDoctorLastNameContainingIgnoreCase(keyword, keyword, keyword, keyword, keyword, pageable);
+	    }
+
+	    return appointmentPage.map(this::convertToResponse);
 	}
 	
 	public List<AppointmentResponse> getTodaysAppointments() {
@@ -625,13 +646,16 @@ public class AppointmentService {
 	    return responses;
 	}
 	
-	@Transactional(readOnly = true)
-	public List<AppointmentResponse> searchAppointments(String keyword) {
-
-	    List<Appointment> appointments = appointmentRepository.findByAppointmentNumberContainingIgnoreCaseOrPatientFirstNameContainingIgnoreCaseOrPatientLastNameContainingIgnoreCaseOrDoctorFirstNameContainingIgnoreCaseOrDoctorLastNameContainingIgnoreCase(keyword, keyword, keyword, keyword, keyword);
-
-	    return appointments.stream().map(this::convertToResponse).collect(Collectors.toList());
-	}
+//	@Transactional(readOnly = true)
+//	public Page<AppointmentResponse> searchAppointments(
+//	        String keyword, int page, int size) {
+//
+//	    Pageable pageable = PageRequest.of(page, size);
+//
+//	    Page<Appointment> appointments = appointmentRepository.findByAppointmentNumberContainingIgnoreCaseOrPatientFirstNameContainingIgnoreCaseOrPatientLastNameContainingIgnoreCaseOrDoctorFirstNameContainingIgnoreCaseOrDoctorLastNameContainingIgnoreCase(keyword, keyword, keyword, keyword, keyword, pageable);
+//
+//	    return appointments.map(this::convertToResponse);
+//	}
 	
 	@Transactional
 	public void cancelAppointment(Long appointmentId) {
@@ -686,6 +710,15 @@ public class AppointmentService {
 	    Appointment updatedAppointment = appointmentRepository.save(appointment);
 
 	    return convertToResponse(updatedAppointment);
+	}
+	
+	@Transactional(readOnly = true)
+	public AppointmentResponse getAppointmentDetailsForAdmin(Long appointmentId) {
+
+	    Appointment appointment = appointmentRepository.findById(appointmentId).orElseThrow(() ->
+	                    		new RuntimeException("Appointment not found."));
+
+	    return convertToResponse(appointment);
 	}
 	
 	private AppointmentResponse convertToResponse(Appointment appointment) {

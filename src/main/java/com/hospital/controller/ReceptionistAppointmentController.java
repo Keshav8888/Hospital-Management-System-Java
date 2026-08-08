@@ -2,6 +2,7 @@ package com.hospital.controller;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -40,17 +41,17 @@ public class ReceptionistAppointmentController {
         return ResponseEntity.ok(appointmentService.getTodaysAppointments());
     }
     
-    @GetMapping
-    public ResponseEntity<List<AppointmentResponse>> getAllAppointments() {
-
-        return ResponseEntity.ok(appointmentService.getAllAppointments());
-    }
+//    @GetMapping
+//    public ResponseEntity<List<AppointmentResponse>> getAllAppointments() {
+//
+//        return ResponseEntity.ok(appointmentService.getAllAppointments());
+//    }
     
-    @GetMapping("/search")
-    public ResponseEntity<List<AppointmentResponse>> searchAppointments(@RequestParam String keyword) {
-
-        return ResponseEntity.ok(appointmentService.searchAppointments(keyword));
-    }
+//    @GetMapping("/search")
+//    public ResponseEntity<List<AppointmentResponse>> searchAppointments(@RequestParam String keyword) {
+//
+//        return ResponseEntity.ok(appointmentService.searchAppointments(keyword));
+//    }
     
     @PutMapping("/{id}/cancel")
     public ResponseEntity<String> cancelAppointment(@PathVariable Long id) {
@@ -66,5 +67,11 @@ public class ReceptionistAppointmentController {
         AppointmentResponse response = appointmentService.rescheduleAppointment(id, request);
 
         return ResponseEntity.ok(response);
+    }
+    
+    @GetMapping
+    public ResponseEntity<Page<AppointmentResponse>> getAppointments(@RequestParam(required = false) String keyword, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+
+        return ResponseEntity.ok(appointmentService.getAppointments(keyword, page, size));
     }
 }
