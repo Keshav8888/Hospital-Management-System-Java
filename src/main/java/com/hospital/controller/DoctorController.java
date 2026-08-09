@@ -74,9 +74,9 @@ public class DoctorController {
 //    }
     
     @GetMapping
-    public ResponseEntity<Page<DoctorResponse>> getDoctors(@RequestParam(required = false) String keyword, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<Page<DoctorResponse>> getDoctors(@RequestParam(required = false) String keyword, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "firstName") String sortBy, @RequestParam(defaultValue = "asc") String sortDir) {
 
-        return ResponseEntity.ok(doctorService.getDoctors(keyword, page, size));
+        return ResponseEntity.ok(doctorService.getDoctors(keyword, page, size, sortBy, sortDir));
     }
     
 }

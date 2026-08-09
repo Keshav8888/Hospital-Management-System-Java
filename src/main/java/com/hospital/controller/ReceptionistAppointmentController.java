@@ -70,8 +70,8 @@ public class ReceptionistAppointmentController {
     }
     
     @GetMapping
-    public ResponseEntity<Page<AppointmentResponse>> getAppointments(@RequestParam(required = false) String keyword, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<Page<AppointmentResponse>> getAppointments(@RequestParam(required = false) String keyword, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "appointmentDate") String sortBy, @RequestParam(defaultValue = "asc") String sortDir) {
 
-        return ResponseEntity.ok(appointmentService.getAppointments(keyword, page, size));
+        return ResponseEntity.ok(appointmentService.getAppointments(keyword, page, size,  sortBy, sortDir));
     }
 }

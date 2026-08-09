@@ -18,6 +18,7 @@ import com.hospital.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -98,9 +99,13 @@ public class DoctorService {
         doctorRepository.save(doctor);
     }
     
-    public Page<DoctorResponse> getDoctors(String keyword, int page, int size) {
+    public Page<DoctorResponse> getDoctors(String keyword, int page, int size, String sortBy, String sortDir) {
 
-        Pageable pageable = PageRequest.of(page, size);
+    	Sort.Direction direction = sortDir.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+
+        Sort sort = Sort.by(direction, sortBy);
+    	
+        Pageable pageable = PageRequest.of(page, size, sort);
 
         Page<Doctor> doctorPage;
 

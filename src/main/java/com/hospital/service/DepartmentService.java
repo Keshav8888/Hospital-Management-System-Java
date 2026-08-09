@@ -3,6 +3,7 @@ package com.hospital.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.hospital.dto.DepartmentRequest;
@@ -50,9 +51,13 @@ public class DepartmentService {
 //        return departments.stream().map(this::convertToResponse).toList();
 //    }
     
-    public Page<DepartmentResponse> getDepartments(String keyword, int page, int size) {
+    public Page<DepartmentResponse> getDepartments(String keyword, int page, int size,  String sortBy, String sortDir) {
 
-        Pageable pageable = PageRequest.of(page, size);
+    	Sort.Direction direction = sortDir.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+
+        Sort sort = Sort.by(direction, sortBy);
+    	
+        Pageable pageable = PageRequest.of(page, size, sort);
 
         Page<Department> departmentPage;
 

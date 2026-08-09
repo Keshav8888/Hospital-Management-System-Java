@@ -21,4 +21,5 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
     
     Page<Patient> findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCaseOrPhoneContainingIgnoreCaseOrUserEmailContainingIgnoreCase(String firstName, String lastName, String phone, String email, Pageable pageable);
     
+    
 }

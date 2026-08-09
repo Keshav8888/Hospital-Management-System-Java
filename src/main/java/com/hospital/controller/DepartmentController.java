@@ -47,9 +47,9 @@ public class DepartmentController {
 //    }
 	
 	@GetMapping
-	public ResponseEntity<Page<DepartmentResponse>> getDepartments(@RequestParam(required = false) String keyword, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+	public ResponseEntity<Page<DepartmentResponse>> getDepartments(@RequestParam(required = false) String keyword, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "name") String sortBy, @RequestParam(defaultValue = "asc") String sortDir) {
 
-	    return ResponseEntity.ok(departmentService.getDepartments(keyword, page, size));
+	    return ResponseEntity.ok(departmentService.getDepartments(keyword, page, size, sortBy, sortDir));
 	}
 
     @GetMapping("/{id}")
