@@ -35,6 +35,12 @@ public class ReceptionistAppointmentController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
     
+    @GetMapping
+    public ResponseEntity<Page<AppointmentResponse>> getAppointments(@RequestParam(required = false) String keyword, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "appointmentDate") String sortBy, @RequestParam(defaultValue = "asc") String sortDir) {
+
+        return ResponseEntity.ok(appointmentService.getAppointments(keyword, page, size,  sortBy, sortDir));
+    }
+    
     @GetMapping("/today")
     public ResponseEntity<List<AppointmentResponse>> getTodaysAppointments() {
 
@@ -69,9 +75,4 @@ public class ReceptionistAppointmentController {
         return ResponseEntity.ok(response);
     }
     
-    @GetMapping
-    public ResponseEntity<Page<AppointmentResponse>> getAppointments(@RequestParam(required = false) String keyword, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "appointmentDate") String sortBy, @RequestParam(defaultValue = "asc") String sortDir) {
-
-        return ResponseEntity.ok(appointmentService.getAppointments(keyword, page, size,  sortBy, sortDir));
-    }
 }

@@ -25,11 +25,25 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 	
 	List<Appointment> findByAppointmentDateOrderByAppointmentTimeAsc(LocalDate appointmentDate);
 	
+	List<Appointment> findByPatientAndAppointmentDate(Patient patient, LocalDate appointmentDate);
+	
 	List<Appointment> findByDoctorAndAppointmentDate(Doctor doctor, LocalDate appointmentDate);
 	
 	List<Appointment> findByPatientAndStatus(Patient patient, AppointmentStatus status);
 	
 	List<Appointment> findByDoctorAndStatus(Doctor doctor, AppointmentStatus status);
+	
+	long countByPatient(Patient patient);
+
+    long countByPatientAndAppointmentDate(Patient patient, LocalDate appointmentDate);
+
+    long countByPatientAndStatus(Patient patient, AppointmentStatus status);
+
+    long countByDoctor(Doctor doctor);
+
+    long countByDoctorAndAppointmentDate(Doctor doctor, LocalDate appointmentDate);
+
+    long countByDoctorAndStatus(Doctor doctor, AppointmentStatus status);
 	
 	List<Appointment> findAllByOrderByAppointmentDateAscAppointmentTimeAsc();
 	
@@ -41,8 +55,9 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 
 	long countByAppointmentDate(LocalDate appointmentDate);
 	
+	long count();
+	
 	Page<Appointment> findByAppointmentNumberContainingIgnoreCaseOrPatientFirstNameContainingIgnoreCaseOrPatientLastNameContainingIgnoreCaseOrDoctorFirstNameContainingIgnoreCaseOrDoctorLastNameContainingIgnoreCase(String appointmentNumber, String patientFirstName, String patientLastName, String doctorFirstName, String doctorLastName, Pageable pageable);
 
-	long count();
 	
 }

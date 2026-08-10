@@ -42,18 +42,24 @@ public class DoctorAppointmentController {
         return ResponseEntity.ok(appointmentService.getTodayAppointments(authentication));
     }
     
-    @PutMapping("/{id}/confirm")
-    public ResponseEntity<String> confirmAppointment(@PathVariable Long id, Authentication authentication) {
+    @GetMapping("/history")
+    public ResponseEntity<List<AppointmentResponse>> getAppointmentHistory(Authentication authentication) {
 
-        appointmentService.confirmAppointment(id, authentication);
-
-        return ResponseEntity.ok("Appointment confirmed successfully.");
+        return ResponseEntity.ok(appointmentService.getAppointmentHistory(authentication));
     }
     
     @GetMapping("/{id}")
     public ResponseEntity<AppointmentResponse> getAppointmentDetails(@PathVariable Long id, Authentication authentication) {
 
         return ResponseEntity.ok(appointmentService.getAppointmentDetailsForDoctor(id, authentication));
+    }
+    
+    @PutMapping("/{id}/confirm")
+    public ResponseEntity<String> confirmAppointment(@PathVariable Long id, Authentication authentication) {
+
+        appointmentService.confirmAppointment(id, authentication);
+
+        return ResponseEntity.ok("Appointment confirmed successfully.");
     }
     
     @PutMapping("/{id}/complete")
@@ -72,9 +78,5 @@ public class DoctorAppointmentController {
         return ResponseEntity.ok("Consultation remarks added successfully.");
     }
     
-    @GetMapping("/history")
-    public ResponseEntity<List<AppointmentResponse>> getAppointmentHistory(Authentication authentication) {
-
-        return ResponseEntity.ok(appointmentService.getAppointmentHistory(authentication));
-    }
+    
 }
