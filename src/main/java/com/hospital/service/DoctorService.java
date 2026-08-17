@@ -199,6 +199,8 @@ public class DoctorService {
 
         response.setLastName(doctor.getLastName());
 
+        response.setDepartmentId(doctor.getDepartment().getId());
+        
         response.setDepartment(doctor.getDepartment().getName());
 
         response.setSpecialization(doctor.getSpecialization());
@@ -400,6 +402,8 @@ public class DoctorService {
 
         response.setLastName(doctor.getLastName());
 
+        response.setDepartmentId(doctor.getDepartment().getId());
+        
         response.setDepartment(doctor.getDepartment().getName());
 
         response.setSpecialization(doctor.getSpecialization());

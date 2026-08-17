@@ -1,5 +1,7 @@
 package com.hospital.controller;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,6 +53,13 @@ public class DepartmentController {
 
 	    return ResponseEntity.ok(departmentService.getDepartments(keyword, page, size, sortBy, sortDir));
 	}
+	
+	@GetMapping("/active")
+    public ResponseEntity<List<DepartmentResponse>> getActiveDepartments() {
+
+        return ResponseEntity.ok(
+                departmentService.getActiveDepartments());
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<DepartmentResponse> getDepartmentById(@PathVariable Long id) {

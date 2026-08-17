@@ -7,6 +7,7 @@ public class DoctorResponse {
 	private Long id;
 	private String firstName;
 	private String lastName;
+	private Long departmentId;
 	private String department;
 	private String specialization;
 	private String qualification;
@@ -19,17 +20,17 @@ public class DoctorResponse {
 	
 	public DoctorResponse() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 
-	public DoctorResponse(Long id, String firstName, String lastName, String department, String specialization,
+	public DoctorResponse(Long id, String firstName, String lastName, Long departmentId, String department, String specialization,
 			String qualification, Integer experience, BigDecimal ConsultantionFee, String phone, String email,
 			String status) {
 		super();
 		this.id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
+		this.departmentId = departmentId;
 		this.department = department;
 		this.specialization = specialization;
 		this.qualification = qualification;
@@ -70,7 +71,14 @@ public class DoctorResponse {
 		this.lastName = lastName;
 	}
 
+	public Long getDepartmentId() {
+	    return departmentId;
+	}
 
+	public void setDepartmentId(Long departmentId) {
+	    this.departmentId = departmentId;
+	}
+	
 	public String getDepartment() {
 		return department;
 	}

@@ -1,5 +1,6 @@
 package com.hospital.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -18,4 +19,7 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
 	Page<Department> findByNameContainingIgnoreCaseOrLocationContainingIgnoreCase(String name, String location, Pageable pageable);
 	
 	 long countByStatus(Status status);
+	 
+	 List<Department> findByStatus(Status status);
+
 }
