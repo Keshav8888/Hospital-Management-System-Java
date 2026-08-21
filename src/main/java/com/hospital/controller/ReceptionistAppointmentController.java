@@ -47,6 +47,13 @@ public class ReceptionistAppointmentController {
         return ResponseEntity.ok(appointmentService.getTodaysAppointments());
     }
     
+    @GetMapping("/{id}")
+    public ResponseEntity<AppointmentResponse> getAppointmentById(@PathVariable Long id) {
+
+        return ResponseEntity.ok(appointmentService.getAppointmentDetailsForAdmin(id)
+        );
+    }
+    
 //    @GetMapping
 //    public ResponseEntity<List<AppointmentResponse>> getAllAppointments() {
 //

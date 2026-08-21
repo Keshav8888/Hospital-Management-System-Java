@@ -1,6 +1,8 @@
 package com.hospital.dto;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import com.hospital.enums.Gender;
 
 public class DoctorResponse {
 
@@ -16,6 +18,9 @@ public class DoctorResponse {
 	private String phone;
 	private String email;
 	private String status;
+	private Gender gender;
+	private LocalDate dateOfBirth;
+	private String address;
 	
 	
 	public DoctorResponse() {
@@ -23,9 +28,9 @@ public class DoctorResponse {
 	}
 
 
-	public DoctorResponse(Long id, String firstName, String lastName, Long departmentId, String department, String specialization,
-			String qualification, Integer experience, BigDecimal ConsultantionFee, String phone, String email,
-			String status) {
+	public DoctorResponse(Long id, String firstName, String lastName, Long departmentId, String department,
+			String specialization, String qualification, Integer experience, BigDecimal consultantionFee, String phone,
+			String email, String status, Gender gender, LocalDate dateOfBirth, String address) {
 		super();
 		this.id = id;
 		this.firstName = firstName;
@@ -35,10 +40,13 @@ public class DoctorResponse {
 		this.specialization = specialization;
 		this.qualification = qualification;
 		this.experience = experience;
-		this.ConsultantionFee = ConsultantionFee;
+		ConsultantionFee = consultantionFee;
 		this.phone = phone;
 		this.email = email;
 		this.status = status;
+		this.gender = gender;
+		this.dateOfBirth = dateOfBirth;
+		this.address = address;
 	}
 
 
@@ -71,14 +79,17 @@ public class DoctorResponse {
 		this.lastName = lastName;
 	}
 
+
 	public Long getDepartmentId() {
-	    return departmentId;
+		return departmentId;
 	}
 
+
 	public void setDepartmentId(Long departmentId) {
-	    this.departmentId = departmentId;
+		this.departmentId = departmentId;
 	}
-	
+
+
 	public String getDepartment() {
 		return department;
 	}
@@ -124,8 +135,8 @@ public class DoctorResponse {
 	}
 
 
-	public void setConsultantionFee(BigDecimal ConsultantionFee) {
-		this.ConsultantionFee = ConsultantionFee;
+	public void setConsultantionFee(BigDecimal consultantionFee) {
+		ConsultantionFee = consultantionFee;
 	}
 
 
@@ -157,6 +168,39 @@ public class DoctorResponse {
 	public void setStatus(String status) {
 		this.status = status;
 	}
+
+
+	public Gender getGender() {
+		return gender;
+	}
+
+
+	public void setGender(Gender gender) {
+		this.gender = gender;
+	}
+
+
+	public LocalDate getDateOfBirth() {
+		return dateOfBirth;
+	}
+
+
+	public void setDateOfBirth(LocalDate dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
+	}
+
+
+	public String getAddress() {
+		return address;
+	}
+
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	
+	
 	
 	
 }

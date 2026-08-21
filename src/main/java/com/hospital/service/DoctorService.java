@@ -15,6 +15,8 @@ import com.hospital.repository.DepartmentRepository;
 import com.hospital.repository.DoctorRepository;
 import com.hospital.repository.UserRepository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -203,6 +205,12 @@ public class DoctorService {
         
         response.setDepartment(doctor.getDepartment().getName());
 
+        response.setGender(doctor.getGender());
+        
+        response.setDateOfBirth(doctor.getDateOfBirth());
+        
+        response.setAddress(doctor.getAddress());
+        
         response.setSpecialization(doctor.getSpecialization());
 
         response.setQualification(doctor.getQualification());
@@ -391,6 +399,22 @@ public class DoctorService {
 //        });
 //    }
     
+    public List<DoctorResponse> getActiveDoctors(Long departmentId) {
+
+        List<Doctor> doctors;
+
+        if (departmentId == null) {
+
+            doctors = doctorRepository.findByStatus(Status.ACTIVE);
+
+        } else {
+
+            doctors = doctorRepository.findByStatusAndDepartmentId(Status.ACTIVE, departmentId);
+        }
+
+        return doctors.stream().map(this::mapToResponse).toList();
+    }
+    
     
     private DoctorResponse mapToResponse(Doctor doctor) {
 
@@ -406,6 +430,12 @@ public class DoctorService {
         
         response.setDepartment(doctor.getDepartment().getName());
 
+        response.setGender(doctor.getGender());
+
+        response.setDateOfBirth(doctor.getDateOfBirth());
+
+        response.setAddress(doctor.getAddress());
+        
         response.setSpecialization(doctor.getSpecialization());
 
         response.setQualification(doctor.getQualification());

@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.hospital.entity.Doctor;
+import com.hospital.enums.Status;
 import com.hospital.entity.Department;
 
 public interface DoctorRepository extends JpaRepository<Doctor, Long> {
@@ -21,6 +22,10 @@ public interface DoctorRepository extends JpaRepository<Doctor, Long> {
     Optional<Doctor> findByUserId(Long userId);
     
     long countByStatus(com.hospital.enums.Status status);
+    
+    List<Doctor> findByStatus(Status status);
+    
+    List<Doctor> findByStatusAndDepartmentId(Status status, Long departmentId);
     
 //    List<Doctor> findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCaseOrSpecializationContainingIgnoreCase(String firstName, String lastName, String specialization);
 
