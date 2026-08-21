@@ -36,6 +36,7 @@ public class Patient {
 	
 	private LocalDate dateOfBirth;
 	private String phone;
+	private String emergencyContact;
 	private String bloodGroup;
 	private String address;
 	private String allergies;
@@ -62,6 +63,7 @@ public class Patient {
 		this.gender = gender;
 		this.dateOfBirth = dateOfBirth;
 		this.phone = phone;
+		this.emergencyContact = emergencyContact;
 		this.bloodGroup = bloodGroup;
 		this.address = address;
 		this.allergies = allergies;
@@ -125,6 +127,14 @@ public class Patient {
 		this.phone = phone;
 	}
 
+	public String getEmergencyContact() {
+		return emergencyContact;
+	}
+
+	public void setEmergencyContact(String emergencyContact) {
+		this.emergencyContact = emergencyContact;
+	}
+
 	public String getBloodGroup() {
 		return bloodGroup;
 	}
@@ -163,6 +173,8 @@ public class Patient {
 
 	public void setStatus(Status status) {
 		this.status = status;
-	}	
+	}
+
+	
 	
 }

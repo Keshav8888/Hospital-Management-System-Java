@@ -16,6 +16,9 @@ import com.hospital.enums.Role;
 import com.hospital.enums.Status;
 import com.hospital.repository.PatientRepository;
 import com.hospital.repository.UserRepository;
+import org.springframework.security.core.Authentication;
+
+import com.hospital.dto.PatientProfileUpdateRequest;
 
 import jakarta.transaction.Transactional;
 
@@ -176,6 +179,62 @@ public class PatientService {
         patientRepository.save(patient);
     }
     
+    @Transactional
+    public PatientResponse getMyProfile(Authentication authentication) {
+
+        String email = authentication.getName();
+
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                    new RuntimeException("User not found."));
+
+        Patient patient = patientRepository.findByUserId(user.getId()).orElseThrow(() ->
+                    	new RuntimeException("Patient not found."));
+
+        return convertToResponse(patient);
+    }
+
+
+    @Transactional
+    public void updateMyProfile(PatientProfileUpdateRequest request, Authentication authentication) {
+
+        String email = authentication.getName();
+
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                    new RuntimeException("User not found."));
+
+        Patient patient = patientRepository.findByUserId(user.getId()).orElseThrow(() ->
+                    	new RuntimeException("Patient not found."));
+
+
+        if (!patient.getPhone().equals(request.getPhone()) && patientRepository.existsByPhone(request.getPhone())) {
+
+            throw new RuntimeException("Phone number already exists.");
+        }
+
+
+        patient.setFirstName(request.getFirstName());
+
+        patient.setLastName(request.getLastName());
+
+        patient.setGender(request.getGender());
+
+        patient.setDateOfBirth(request.getDateOfBirth());
+
+        patient.setPhone(request.getPhone());
+
+        patient.setEmergencyContact(request.getEmergencyContact());
+        
+        patient.setBloodGroup(request.getBloodGroup());
+
+        patient.setAddress(request.getAddress());
+
+        patient.setAllergies(request.getAllergies());
+
+        patient.setMedicalHistory(request.getMedicalHistory());
+
+        patientRepository.save(patient);
+    }
+    
     private PatientResponse convertToResponse(Patient patient) {
 
         PatientResponse response = new PatientResponse();
@@ -198,6 +257,8 @@ public class PatientService {
 
         response.setAddress(patient.getAddress());
 
+        response.setEmergencyContact(patient.getEmergencyContact());
+        
         response.setAllergies(patient.getAllergies());
 
         response.setMedicalHistory(patient.getMedicalHistory());
